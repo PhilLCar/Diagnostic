@@ -1,2 +1,2 @@
-# Collection (CUT)
-Redimensionable arrays for C, optimized for ease of use
+# Diagnostic (CUT)
+Memory diagnostic for C (malloc)
