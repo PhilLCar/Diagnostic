@@ -36,15 +36,29 @@ void *__malloc(size_t size, char *file, int line)
     _mem_table[_mem_table_size + 3] = (void*)(long)line;
     _mem_table_size += 4;
   }
+
   return mem;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void __free(void *mem)
+void *__calloc(size_t nmemb, size_t size,  char *file, int line)
+{
+  void *ptr = __malloc(nmemb * size, file, line);
+
+  if (ptr)
+  {
+    memset(ptr, 0, nmemb * size);
+  }
+
+  return ptr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void __free(void *ptr)
 {
   size_t size;
   for (int i = 0; i < _mem_table_size; i += 4) {
-    if (_mem_table[i] == mem) {
+    if (_mem_table[i] == ptr) {
       size = (size_t)_mem_table[i + 1];
       _mem_table[i]     = NULL;
       _mem_table[i + 1] = NULL;
@@ -54,16 +68,16 @@ void __free(void *mem)
     }
   }
   _mem_total_size -= size;
-  free(mem);
+  free(ptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void *__realloc(void *mem, size_t size, char *file, int line)
+void *__realloc(void *ptr, size_t size, char *file, int line)
 {
   for (int i = 0; i < _mem_table_size; i += 4) {
-    if (_mem_table[i] == mem) {
+    if (_mem_table[i] == ptr) {
       _mem_total_size += size - (size_t)_mem_table[i + 1];
-      _mem_table[i]     = realloc(mem, size);
+      _mem_table[i]     = realloc(ptr, size);
       _mem_table[i + 1] = (void*)size;
       _mem_table[i + 2] = file;
       _mem_table[i + 3] = (void*)(long)line;
@@ -71,6 +85,12 @@ void *__realloc(void *mem, size_t size, char *file, int line)
     }
   }
   return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void *__reallocarray(void *ptr, size_t nmemb, size_t size, char *file, int line)
+{
+  return __realloc(ptr, nmemb * size, file, line);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
