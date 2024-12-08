@@ -1,7 +1,4 @@
-/*
-THIS FILE HAS TO BE INCLUDED IN EACH
-TRANSLATION UNIT, OR IT WILL NOT WORK
-*/
+/* THIS FILE HAS TO BE INCLUDED IN EACH TRANSLATION UNIT, OR IT WILL NOT WORK */
 #ifdef  MEMORY_WATCH
 #ifndef DIAGNOSTIC_H
 #define DIAGNOSTIC_H
@@ -15,6 +12,7 @@ TRANSLATION UNIT, OR IT WILL NOT WORK
 // determine if the program has a memory leak.
 
 #ifndef DIAGNOSTIC_INC
+
 #define  malloc(SIZE)                   __malloc(SIZE, __FILE__, __LINE__)
 #define  calloc(NMEMB, SIZE)            __calloc(NMEMB, SIZE, __FILE__, __LINE__)
 #define  free(PTR)                      __free(PTR)
@@ -24,11 +22,11 @@ TRANSLATION UNIT, OR IT WILL NOT WORK
 #define  STOP_WATCHING __end();
 #endif
 
-void   *__malloc(size_t, char*, int);
-void   *__calloc(size_t, size_t, char*, int);
+void   *__malloc(size_t, const char*, int);
+void   *__calloc(size_t, size_t, const char*, int);
 void    __free(void*);
-void   *__realloc(void*, size_t, char*, int);
-void   *__reallocarray(void*, size_t, size_t, char*, int);
+void   *__realloc(void*, size_t, const char*, int);
+void   *__reallocarray(void*, size_t, size_t, const char*, int);
 
 // RETURNS the current size of allocated memory
 size_t  __memuse();

@@ -1,49 +1,64 @@
-#ifdef MEMORY_WATCH
+#ifdef  MEMORY_WATCH
 #define DIAGNOSTIC_INC
 #include <diagnostic.h>
 
+typedef struct {
+  void       *pointer;
+  size_t      size;
+  const char *filename;
+  int         line;
+} Allocation;
+
 // Memory table global variables
-size_t _mem_total_size = 0;
-int    _mem_table_size = 0;
-int    _mem_table_cap  = 2048;
-void **_mem_table      = NULL;
+size_t      _mem_total_size = 0;
+int         _mem_table_size = 0;
+int         _mem_table_cap  = 2048;
+Allocation *_mem_table      = NULL;
+
 
 ////////////////////////////////////////////////////////////////////////////////
-void *__malloc(size_t size, char *file, int line)
+void *__malloc(size_t size, const char *filename, int line)
 {
-  if (_mem_table == NULL) {
-    _mem_table = (void**)malloc(_mem_table_cap * sizeof(void*));
-  }
+  if (!_mem_table) _mem_table = calloc(_mem_table_cap, sizeof(Allocation));
+
   void *mem = malloc(size);
+
   if (mem) {
     _mem_total_size += size;
-    for (int i = 0; i < _mem_table_size; i += 4) {
-      if (!_mem_table[i]) {
-        _mem_table[i]     = mem;
-        _mem_table[i + 1] = (void*)size;
-        _mem_table[i + 2] = file;
-        _mem_table[i + 3] = (void*)(long)line;
+    
+    for (int i = 0; i < _mem_table_size; i ++) {
+      Allocation *alloc = &_mem_table[i];
+
+      if (!alloc->pointer) {
+        alloc->pointer  = mem;
+        alloc->size     = size;
+        alloc->filename = filename;
+        alloc->line     = line;
+
         return mem;
       }
     }
+
     if (_mem_table_size >= _mem_table_cap) {
       _mem_table_cap <<= 1;
-      _mem_table = (void**)realloc(_mem_table, _mem_table_cap * sizeof(void*));
+      _mem_table = reallocarray(_mem_table, _mem_table_cap, sizeof(Allocation));
     }
-    _mem_table[_mem_table_size]     = mem;
-    _mem_table[_mem_table_size + 1] = (void*)size;
-    _mem_table[_mem_table_size + 2] = file;
-    _mem_table[_mem_table_size + 3] = (void*)(long)line;
-    _mem_table_size += 4;
+
+    Allocation *alloc = &_mem_table[_mem_table_size++];
+
+    alloc->pointer  = mem;
+    alloc->size     = size;
+    alloc->filename = filename;
+    alloc->line     = line;
   }
 
   return mem;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void *__calloc(size_t nmemb, size_t size,  char *file, int line)
+void *__calloc(size_t nmemb, size_t size, const char *filename, int line)
 {
-  void *ptr = __malloc(nmemb * size, file, line);
+  void *ptr = __malloc(nmemb * size, filename, line);
 
   if (ptr)
   {
@@ -57,40 +72,52 @@ void *__calloc(size_t nmemb, size_t size,  char *file, int line)
 void __free(void *ptr)
 {
   size_t size;
-  for (int i = 0; i < _mem_table_size; i += 4) {
-    if (_mem_table[i] == ptr) {
-      size = (size_t)_mem_table[i + 1];
-      _mem_table[i]     = NULL;
-      _mem_table[i + 1] = NULL;
-      _mem_table[i + 2] = NULL;
-      _mem_table[i + 3] = NULL;
+
+  for (int i = 0; i < _mem_table_size; i++) {
+    Allocation *alloc = &_mem_table[i];
+
+    if (alloc->pointer == ptr) {
+      size = alloc->size;
+
+      alloc->pointer  = NULL;
+      alloc->size     = 0;
+      alloc->filename = NULL;
+      alloc->line     = 0;
+
       break;
     }
   }
+
   _mem_total_size -= size;
+
   free(ptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void *__realloc(void *ptr, size_t size, char *file, int line)
+void *__realloc(void *ptr, size_t size, const char *filename, int line)
 {
-  for (int i = 0; i < _mem_table_size; i += 4) {
-    if (_mem_table[i] == ptr) {
-      _mem_total_size += size - (size_t)_mem_table[i + 1];
-      _mem_table[i]     = realloc(ptr, size);
-      _mem_table[i + 1] = (void*)size;
-      _mem_table[i + 2] = file;
-      _mem_table[i + 3] = (void*)(long)line;
-      return _mem_table[i];
+  for (int i = 0; i < _mem_table_size; i++) {
+    Allocation *alloc = &_mem_table[i];
+
+    if (alloc->pointer == ptr) {
+      _mem_total_size += size - alloc->size;
+
+      alloc->pointer  = realloc(ptr, size);
+      alloc->size     = size;
+      alloc->filename = filename;
+      alloc->line     = line;
+
+      return alloc->pointer;
     }
   }
+
   return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void *__reallocarray(void *ptr, size_t nmemb, size_t size, char *file, int line)
+void *__reallocarray(void *ptr, size_t nmemb, size_t size, const char *filename, int line)
 {
-  return __realloc(ptr, nmemb * size, file, line);
+  return __realloc(ptr, nmemb * size, filename, line);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,14 +129,17 @@ size_t __memuse()
 ////////////////////////////////////////////////////////////////////////////////
 void __end()
 {
-  for (int i = 0; i < _mem_table_size; i += 4) {
-    if (_mem_table[i]) {
-      fprintf(stderr, "%s(%ld): A block of size %ld was allocated but never recovered!\n",
-                      (char*)_mem_table[i + 2],
-                      (long) _mem_table[i + 3],
-                      (long) _mem_table[i + 1]);
+  for (int i = 0; i < _mem_table_size; i++) {
+    Allocation *alloc = &_mem_table[i];
+
+    if (alloc->pointer) {
+      fprintf(stderr, "%s(%d): A block of size %ld was allocated but never recovered!\n",
+                      alloc->filename,
+                      alloc->line,
+                      alloc->size);
     }
   }
+
   free(_mem_table);
 }
 
