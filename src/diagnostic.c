@@ -26,7 +26,7 @@ void *__malloc(size_t size, const char *filename, int line)
   if (mem) {
     _mem_total_size += size;
     
-    for (int i = 0; i < _mem_table_size; i ++) {
+    for (int i = 0; i < _mem_table_size; i++) {
       Allocation *alloc = &_mem_table[i];
 
       if (!alloc->pointer) {
