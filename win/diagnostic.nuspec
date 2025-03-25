@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Diagnostic</id>
+	<version> 2025.3.25.1604 </version>
+    <authors>Philippe Caron</authors>
+    <description>Diagnostic package allows to detect memory leaks when included at compile-time</description>
+	<readme>docs\README.md</readme>
+  
+	<dependencies>
+	  <group targetFramework="native0.0">
+	  </group>
+	</dependencies>
+  </metadata>
+  
+  <files>
+    <file src="..\bin\x64\Debug\Diagnostic.dll" target="lib\native\diagnostic.dll" />
+    <file src="..\bin\x64\Debug\Diagnostic.lib" target="lib\native\diagnostic.lib" />
+    <file src="..\bin\x64\Debug\Diagnostic.pdb" target="lib\native\diagnostic.pdb" />
+    <file src="..\win\diagnostic.targets"       target="build\native\diagnostic.targets" />
+    <file src="..\README.md"                    target="docs\README.md" />
+  </files>
+</package>

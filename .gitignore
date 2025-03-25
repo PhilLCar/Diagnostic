@@ -7,3 +7,6 @@ bin
 .vscode
 .vs
 .cut
+
+# Credentials
+win/NuGet.config
