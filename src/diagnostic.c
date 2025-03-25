@@ -15,11 +15,21 @@ int         _mem_table_size = 0;
 int         _mem_table_cap  = 2048;
 Allocation *_mem_table      = NULL;
 
+#ifdef WIN
+/******************************************************************************/
+static void *reallocarray(void *ptr, int length, size_t element_size)
+{
+  return realloc(ptr, length * element_size);
+}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 void *__malloc(size_t size, const char *filename, int line)
 {
-  if (!_mem_table) _mem_table = calloc(_mem_table_cap, sizeof(Allocation));
+  if (!_mem_table && !(_mem_table = calloc(_mem_table_cap, sizeof(Allocation)))) {
+    fprintf(stderr, "Critical memory allocation failure!");
+    exit(-1);
+  }
 
   void *mem = malloc(size);
 
@@ -46,10 +56,12 @@ void *__malloc(size_t size, const char *filename, int line)
 
     Allocation *alloc = &_mem_table[_mem_table_size++];
 
-    alloc->pointer  = mem;
-    alloc->size     = size;
-    alloc->filename = filename;
-    alloc->line     = line;
+    if (alloc) {
+      alloc->pointer  = mem;
+      alloc->size     = size;
+      alloc->filename = filename;
+      alloc->line     = line;
+    }
   }
 
   return mem;
@@ -71,7 +83,7 @@ void *__calloc(size_t nmemb, size_t size, const char *filename, int line)
 ////////////////////////////////////////////////////////////////////////////////
 void __free(void *ptr)
 {
-  size_t size;
+  size_t size = 0;
 
   for (int i = 0; i < _mem_table_size; i++) {
     Allocation *alloc = &_mem_table[i];
@@ -136,7 +148,7 @@ void __end()
       fprintf(stderr, "%s(%d): A block of size %ld was allocated but never recovered!\n",
                       alloc->filename,
                       alloc->line,
-                      alloc->size);
+                      (long)alloc->size);
     }
   }
 

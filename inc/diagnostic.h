@@ -18,21 +18,27 @@
 #define  free(PTR)                      __free(PTR)
 #define  realloc(PTR, SIZE)             __realloc(PTR, SIZE, __FILE__, __LINE__)
 #define  reallocarray(PTR, NMEMB, SIZE) __reallocarray(PTR, NMEMB, SIZE, __FILE__, __LINE__)
-#define  CHECK_MEMORY  printf("Memory usage: %ld bytes\n", __memuse());
-#define  STOP_WATCHING __end();
+#define  CHECK_MEMORY                   printf("Memory usage: %ld bytes\n", (long)__memuse());
+#define  STOP_WATCHING                  __end();
 #endif
 
-void   *__malloc(size_t, const char*, int);
-void   *__calloc(size_t, size_t, const char*, int);
-void    __free(void*);
-void   *__realloc(void*, size_t, const char*, int);
-void   *__reallocarray(void*, size_t, size_t, const char*, int);
+#ifdef WIN
+#define PUBLIC __declspec(dllexport)
+#else
+#define PUBLIC __attribute__((visibility("default")))
+#endif
+
+PUBLIC void   *__malloc(size_t, const char*, int);
+PUBLIC void   *__calloc(size_t, size_t, const char*, int);
+PUBLIC void    __free(void*);
+PUBLIC void   *__realloc(void*, size_t, const char*, int);
+PUBLIC void   *__reallocarray(void*, size_t, size_t, const char*, int);
 
 // RETURNS the current size of allocated memory
-size_t  __memuse();
+PUBLIC size_t  __memuse();
 
 // Prints a report for each unfreed block
-void    __end();
+PUBLIC void    __end();
 
 #endif
 #else
