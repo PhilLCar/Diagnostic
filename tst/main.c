@@ -9,9 +9,11 @@ int main(void) {
 
   CHECK_MEMORY
 
-  void *test = malloc(1 * sizeof(int));
+  int *test = malloc(1 * sizeof(int));
 
   STOP_WATCHING
 
-  return 0;
+  *test = 0;
+
+  return *test;
 }
