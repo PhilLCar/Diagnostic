@@ -8,5 +8,6 @@ bin
 .vs
 .cut
 
-# Credentials
+# NuGet
 win/NuGet.config
+win/*.nupkg
