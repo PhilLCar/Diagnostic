@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#define MEMORY_WATCH
 #include <diagnostic.h>
 
 int main(void) {
