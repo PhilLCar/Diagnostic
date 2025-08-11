@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Diagnostic</id>
-	<version> 2025.3.28.1118 </version>
+	<version> 2025.8.11.1708 </version>
     <authors>Philippe Caron</authors>
     <description>Diagnostic package allows to detect memory leaks when included at compile-time</description>
 	<readme>docs\README.md</readme>
@@ -17,8 +17,9 @@
     <file src="..\bin\x64\Debug\Diagnostic.dll" target="lib\native\diagnostic.dll" />
     <file src="..\bin\x64\Debug\Diagnostic.lib" target="lib\native\diagnostic.lib" />
     <file src="..\bin\x64\Debug\Diagnostic.pdb" target="lib\native\diagnostic.pdb" />
-	<file src="..\inc\*.h"                      target="build\native\include\" />
+    <file src="..\inc\*.h"                      target="build\native\include\" />
     <file src="..\win\diagnostic.targets"       target="build\native\diagnostic.targets" />
+    <file src="..\win\diagnostic.props"         target="build\native\diagnostic.props" />
     <file src="..\README.md"                    target="docs\README.md" />
   </files>
 </package>

@@ -26,6 +26,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="deploy.ps1" />
+    <None Include="diagnostic.nuspec" />
+    <None Include="diagnostic.props" />
+    <None Include="diagnostic.targets" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

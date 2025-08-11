@@ -26,5 +26,14 @@
     <None Include="deploy.ps1">
       <Filter>build</Filter>
     </None>
+    <None Include="diagnostic.props">
+      <Filter>build</Filter>
+    </None>
+    <None Include="diagnostic.nuspec">
+      <Filter>build</Filter>
+    </None>
+    <None Include="diagnostic.targets">
+      <Filter>build</Filter>
+    </None>
   </ItemGroup>
 </Project>
