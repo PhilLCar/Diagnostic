@@ -23,24 +23,24 @@
 #endif
 
 #ifdef WIN
-#define PUBLIC __declspec(dllexport)
+#define DIAGNOSTIC_EXPORT __declspec(dllexport)
 #else
-#define PUBLIC __attribute__((visibility("default")))
+#define DIAGNOSTIC_EXPORT __attribute__((visibility("default")))
 #endif
 
-PUBLIC void   *__malloc(size_t, const char*, int);
-PUBLIC void   *__calloc(size_t, size_t, const char*, int);
-PUBLIC void    __free(void*);
-PUBLIC void   *__realloc(void*, size_t, const char*, int);
-PUBLIC void   *__reallocarray(void*, size_t, size_t, const char*, int);
+DIAGNOSTIC_EXPORT void   *__malloc(size_t, const char*, int);
+DIAGNOSTIC_EXPORT void   *__calloc(size_t, size_t, const char*, int);
+DIAGNOSTIC_EXPORT void    __free(void*);
+DIAGNOSTIC_EXPORT void   *__realloc(void*, size_t, const char*, int);
+DIAGNOSTIC_EXPORT void   *__reallocarray(void*, size_t, size_t, const char*, int);
 
 // RETURNS the current size of allocated memory
-PUBLIC size_t  __memuse();
+DIAGNOSTIC_EXPORT size_t  __memuse();
 
 // Prints a report for each unfreed block
-PUBLIC void    __end();
+DIAGNOSTIC_EXPORT void    __end();
 
-#undef PUBLIC
+#undef DIAGNOSTIC_EXPORT
 
 #endif
 #else
