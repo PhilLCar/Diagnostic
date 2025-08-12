@@ -40,6 +40,8 @@ PUBLIC size_t  __memuse();
 // Prints a report for each unfreed block
 PUBLIC void    __end();
 
+#undef PUBLIC
+
 #endif
 #else
 #define CHECK_MEMORY
