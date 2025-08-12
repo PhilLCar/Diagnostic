@@ -2,13 +2,13 @@
 <package >
   <metadata>
     <id>Diagnostic</id>
-	<version> 2025.8.11.2040 </version>
+	<version> 2025.8.11.2048 </version>
     <authors>Philippe Caron</authors>
     <description>Diagnostic package allows to detect memory leaks when included at compile-time</description>
 	<readme>docs\README.md</readme>
   
 	<dependencies>
-	  <group targetFramework="native0.0">
+	  <group targetFramework="native">
 	  </group>
 	</dependencies>
   </metadata>
