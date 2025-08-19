@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
+#include "export.h"
 
 // This has the purpose of replacing normal memory management functions
 // with these ones that track all allocated pointers, this allows to easily
@@ -18,29 +20,21 @@
 #define  free(PTR)                      __free(PTR)
 #define  realloc(PTR, SIZE)             __realloc(PTR, SIZE, __FILE__, __LINE__)
 #define  reallocarray(PTR, NMEMB, SIZE) __reallocarray(PTR, NMEMB, SIZE, __FILE__, __LINE__)
-#define  CHECK_MEMORY                   printf("Memory usage: %ld bytes\n", (long)__memuse());
+#define  CHECK_MEMORY                   printf("Memory usage: %lld bytes\n", (int64_t)__memuse());
 #define  STOP_WATCHING                  __end();
 #endif
 
-#ifdef WIN
-#define DIAGNOSTIC_EXPORT __declspec(dllexport)
-#else
-#define DIAGNOSTIC_EXPORT __attribute__((visibility("default")))
-#endif
-
-DIAGNOSTIC_EXPORT void   *__malloc(size_t, const char*, int);
-DIAGNOSTIC_EXPORT void   *__calloc(size_t, size_t, const char*, int);
-DIAGNOSTIC_EXPORT void    __free(void*);
-DIAGNOSTIC_EXPORT void   *__realloc(void*, size_t, const char*, int);
-DIAGNOSTIC_EXPORT void   *__reallocarray(void*, size_t, size_t, const char*, int);
+PUBLIC void   *__malloc(size_t, const char*, int);
+PUBLIC void   *__calloc(size_t, size_t, const char*, int);
+PUBLIC void    __free(void*);
+PUBLIC void   *__realloc(void*, size_t, const char*, int);
+PUBLIC void   *__reallocarray(void*, size_t, size_t, const char*, int);
 
 // RETURNS the current size of allocated memory
-DIAGNOSTIC_EXPORT size_t  __memuse();
+PUBLIC size_t  __memuse();
 
 // Prints a report for each unfreed block
-DIAGNOSTIC_EXPORT void    __end();
-
-#undef DIAGNOSTIC_EXPORT
+PUBLIC void    __end();
 
 #endif
 #else
