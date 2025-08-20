@@ -19,7 +19,7 @@
 #define  free(PTR)                      __free(PTR)
 #define  realloc(PTR, SIZE)             __realloc(PTR, SIZE, __FILE__, __LINE__)
 #define  reallocarray(PTR, NMEMB, SIZE) __reallocarray(PTR, NMEMB, SIZE, __FILE__, __LINE__)
-#define  CHECK_MEMORY                   printf("Memory usage: %lld bytes\n", (int64_t)__memuse());
+#define  CHECK_MEMORY                   printf("Memory usage: %"PRId64" bytes\n", (int64_t)__memuse());
 #define  STOP_WATCHING                  __end();
 
 #else
