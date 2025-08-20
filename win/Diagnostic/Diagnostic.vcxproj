@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\diagnostic.h" />
-    <ClInclude Include="..\..\inc\export.h" />
+    <ClInclude Include="..\..\inc\diagnostic.export.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\diagnostic.c" />

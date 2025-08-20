@@ -16,7 +16,7 @@
     <ClInclude Include="..\..\inc\diagnostic.h">
       <Filter>inc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\export.h">
+    <ClInclude Include="..\..\inc\diagnostic.export.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
