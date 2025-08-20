@@ -1,5 +1,4 @@
-#ifdef  MEMORY_WATCH
-#define DIAGNOSTIC_INC
+#undef MEMORY_WATCH
 #include <diagnostic.h>
 
 typedef struct {
@@ -154,5 +153,3 @@ void __end()
 
   free(_mem_table);
 }
-
-#endif

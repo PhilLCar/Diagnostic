@@ -1,5 +1,4 @@
 /* THIS FILE HAS TO BE INCLUDED IN EACH TRANSLATION UNIT, OR IT WILL NOT WORK */
-#ifdef  MEMORY_WATCH
 #ifndef DIAGNOSTIC_H
 #define DIAGNOSTIC_H
 
@@ -13,7 +12,7 @@
 // with these ones that track all allocated pointers, this allows to easily
 // determine if the program has a memory leak.
 
-#ifndef DIAGNOSTIC_INC
+#ifdef  MEMORY_WATCH
 
 #define  malloc(SIZE)                   __malloc(SIZE, __FILE__, __LINE__)
 #define  calloc(NMEMB, SIZE)            __calloc(NMEMB, SIZE, __FILE__, __LINE__)
@@ -23,6 +22,9 @@
 #define  CHECK_MEMORY                   printf("Memory usage: %lld bytes\n", (int64_t)__memuse());
 #define  STOP_WATCHING                  __end();
 
+#else
+#define CHECK_MEMORY
+#define STOP_WATCHING
 #endif
 
 DIAGNOSTIC_EXPORT void   *__malloc(size_t, const char*, int);
@@ -37,8 +39,4 @@ DIAGNOSTIC_EXPORT size_t  __memuse();
 // Prints a report for each unfreed block
 DIAGNOSTIC_EXPORT void    __end();
 
-#endif
-#else
-#define CHECK_MEMORY
-#define STOP_WATCHING
 #endif
