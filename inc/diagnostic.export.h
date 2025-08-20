@@ -1,5 +1,5 @@
-#ifndef EXPORT_H
-#define EXPORT_H
+#ifndef DIAGNOSTIC_EXPORT_H
+#define DIAGNOSTIC_EXPORT_H
 
 
 #ifdef WIN
