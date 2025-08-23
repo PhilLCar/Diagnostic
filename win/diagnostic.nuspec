@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Diagnostic</id>
-	<version> 2025.8.20.1612 </version>
+	<version> 2025.8.23.1505 </version>
     <authors>Philippe Caron</authors>
     <description>Diagnostic package allows to detect memory leaks when included at compile-time</description>
 	<readme>docs\README.md</readme>
